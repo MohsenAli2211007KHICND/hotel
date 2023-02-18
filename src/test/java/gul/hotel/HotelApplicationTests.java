@@ -22,8 +22,6 @@ class HotelApplicationTests {
 	@InjectMocks
 	private HotelServiceImpl hotelServiceImpl;
 
-
-
 	/*
 	 * Stories
 	 * 1) As a traveler, I can enter my search criteria and see a list of hotels
@@ -189,7 +187,7 @@ class HotelApplicationTests {
 	}
 
 	@Test
-	void getBuilderHotel(){
+	void getBuilderHotel() {
 		Long id = 1L;
 		String hotleName = "PC hotel";
 		String shortDescription = "this is short description";
@@ -200,16 +198,16 @@ class HotelApplicationTests {
 		String pool = "No";
 		Long price = 4000L;
 		Hotel hotel = Hotel.builder()
-							.id(id)
-							.hotelName(hotleName)
-							.shortDescription(shortDescription)
-							.longDescription(longDescription)
-							.img(img)
-							.location(location)
-							.experienceLevel(experienceLevel)
-							.pool(pool)
-							.price(price)
-							.build();
+				.id(id)
+				.hotelName(hotleName)
+				.shortDescription(shortDescription)
+				.longDescription(longDescription)
+				.img(img)
+				.location(location)
+				.experienceLevel(experienceLevel)
+				.pool(pool)
+				.price(price)
+				.build();
 		assertEquals(id, hotel.getId());
 		assertEquals(hotleName, hotel.getHotelName());
 		assertEquals(shortDescription, hotel.getShortDescription());
@@ -218,11 +216,11 @@ class HotelApplicationTests {
 		assertEquals(location, hotel.getLocation());
 		assertEquals(experienceLevel, hotel.getExperienceLevel());
 		assertEquals(pool, hotel.getPool());
-		assertEquals(price, hotel.getPrice());							
+		assertEquals(price, hotel.getPrice());
 	}
 
 	@Test
-	void canSaveHotelDetails(){
+	void canSaveHotelDetails() {
 		Long id = 1L;
 		String hotleName = "PC hotel";
 		String shortDescription = "this is short description";
@@ -233,23 +231,24 @@ class HotelApplicationTests {
 		String pool = "No";
 		Long price = 4000L;
 		Hotel hotel = Hotel.builder()
-							.id(id)
-							.hotelName(hotleName)
-							.shortDescription(shortDescription)
-							.longDescription(longDescription)
-							.img(img)
-							.location(location)
-							.experienceLevel(experienceLevel)
-							.pool(pool)
-							.price(price)
-							.build();
+				.id(id)
+				.hotelName(hotleName)
+				.shortDescription(shortDescription)
+				.longDescription(longDescription)
+				.img(img)
+				.location(location)
+				.experienceLevel(experienceLevel)
+				.pool(pool)
+				.price(price)
+				.build();
 		given(hotelRepository.findByHotelName(hotleName)).willReturn(Optional.empty());
 		given(hotelRepository.save(hotel)).willReturn(hotel);
 		Hotel saved = hotelServiceImpl.saveHotel(hotel);
 		assertNotNull(saved);
 	}
+
 	@Test
-	void canGetHotel(){
+	void canGetHotel() {
 		Long id = 1L;
 		String hotleName = "PC hotel";
 		String shortDescription = "this is short description";
@@ -260,16 +259,16 @@ class HotelApplicationTests {
 		String pool = "No";
 		Long price = 4000L;
 		Hotel hotel = Hotel.builder()
-							.id(id)
-							.hotelName(hotleName)
-							.shortDescription(shortDescription)
-							.longDescription(longDescription)
-							.img(img)
-							.location(location)
-							.experienceLevel(experienceLevel)
-							.pool(pool)
-							.price(price)
-							.build();
+				.id(id)
+				.hotelName(hotleName)
+				.shortDescription(shortDescription)
+				.longDescription(longDescription)
+				.img(img)
+				.location(location)
+				.experienceLevel(experienceLevel)
+				.pool(pool)
+				.price(price)
+				.build();
 		given(hotelRepository.getReferenceById(hotel.getId())).willReturn(hotel);
 		Hotel gottenHotel = hotelServiceImpl.getHotel(hotel.getId());
 		assertNotNull(gottenHotel);
@@ -283,8 +282,9 @@ class HotelApplicationTests {
 		assertEquals(gottenHotel.getPool(), hotel.getPool());
 		assertEquals(gottenHotel.getImg(), hotel.getImg());
 	}
+
 	@Test
-	void canUpdateHotel(){
+	void canUpdateHotel() {
 		Long id = 1L;
 		String hotleName = "PC hotel";
 		String shortDescription = "this is short description";
@@ -295,16 +295,16 @@ class HotelApplicationTests {
 		String pool = "No";
 		Long price = 4000L;
 		Hotel hotel = Hotel.builder()
-							.id(id)
-							.hotelName(hotleName)
-							.shortDescription(shortDescription)
-							.longDescription(longDescription)
-							.img(img)
-							.location(location)
-							.experienceLevel(experienceLevel)
-							.pool(pool)
-							.price(price)
-							.build();
+				.id(id)
+				.hotelName(hotleName)
+				.shortDescription(shortDescription)
+				.longDescription(longDescription)
+				.img(img)
+				.location(location)
+				.experienceLevel(experienceLevel)
+				.pool(pool)
+				.price(price)
+				.build();
 		given(hotelRepository.findByHotelName(hotleName)).willReturn(Optional.of(hotel));
 		given(hotelRepository.save(hotel)).willReturn(hotel);
 		Hotel updatedHotel = hotelServiceImpl.updateHotel(hotel);
@@ -319,60 +319,62 @@ class HotelApplicationTests {
 		assertEquals(updatedHotel.getPool(), hotel.getPool());
 		assertEquals(updatedHotel.getImg(), hotel.getImg());
 	}
+
 	@Test
-	void canDeleteHotel(){
+	void canDeleteHotel() {
 		Long id = 1L;
 		willDoNothing().given(hotelRepository).deleteById(id);
 		hotelServiceImpl.deleteHotel(id);
 		verify(hotelRepository, times(1)).deleteById(id);
 	}
+
 	@Test
-	void canGetAllHotel(){
+	void canGetAllHotel() {
 		Hotel hotel1 = Hotel.builder()
-							.id(1L)
-							.hotelName("PC Hotel")
-							.shortDescription("This is Pc hotel")
-							.longDescription("it is long description of Pc hotel")
-							.img("img")
-							.location("Karchi")
-							.experienceLevel("Budget")
-							.pool("No")
-							.price(2356L)
-							.build();
+				.id(1L)
+				.hotelName("PC Hotel")
+				.shortDescription("This is Pc hotel")
+				.longDescription("it is long description of Pc hotel")
+				.img("img")
+				.location("Karchi")
+				.experienceLevel("Budget")
+				.pool("No")
+				.price(2356L)
+				.build();
 		Hotel hotel2 = Hotel.builder()
-							.id(2L)
-							.hotelName("DC Hotel")
-							.shortDescription("this is Dc hotel")
-							.longDescription("This is long description of Dc hotel")
-							.img("image")
-							.location("Quetta")
-							.experienceLevel("Luxury")
-							.pool("Yes")
-							.price(4568L)
-							.build();
+				.id(2L)
+				.hotelName("DC Hotel")
+				.shortDescription("this is Dc hotel")
+				.longDescription("This is long description of Dc hotel")
+				.img("image")
+				.location("Quetta")
+				.experienceLevel("Luxury")
+				.pool("Yes")
+				.price(4568L)
+				.build();
 		Hotel hotel3 = Hotel.builder()
-							.id(3L)
-							.hotelName("GC hotel")
-							.shortDescription("this is GC hotel")
-							.longDescription("This is long description of GC hotel")
-							.img("image")
-							.location("Turbat")
-							.experienceLevel("Luxury")
-							.pool("No")
-							.price(5555L)
-							.build();
+				.id(3L)
+				.hotelName("GC hotel")
+				.shortDescription("this is GC hotel")
+				.longDescription("This is long description of GC hotel")
+				.img("image")
+				.location("Turbat")
+				.experienceLevel("Luxury")
+				.pool("No")
+				.price(5555L)
+				.build();
 		Hotel hotel4 = Hotel.builder()
-							.id(4L)
-							.hotelName("Kaka")
-							.shortDescription("This is Kaka hotel")
-							.longDescription("This is long description")
-							.img("image")
-							.location("Buleda")
-							.experienceLevel("budget")
-							.pool("No")
-							.price(3000L)
-							.build();
-		given(hotelRepository.findAll()).willReturn(List.of(hotel1,hotel2,hotel3,hotel4));
+				.id(4L)
+				.hotelName("Kaka")
+				.shortDescription("This is Kaka hotel")
+				.longDescription("This is long description")
+				.img("image")
+				.location("Buleda")
+				.experienceLevel("budget")
+				.pool("No")
+				.price(3000L)
+				.build();
+		given(hotelRepository.findAll()).willReturn(List.of(hotel1, hotel2, hotel3, hotel4));
 		List<Hotel> hotels = hotelServiceImpl.getAllHotels();
 		assertNotNull(hotels);
 		assertEquals(hotels.size(), 4);
