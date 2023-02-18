@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -272,8 +273,108 @@ class HotelApplicationTests {
 		given(hotelRepository.getReferenceById(hotel.getId())).willReturn(hotel);
 		Hotel gottenHotel = hotelServiceImpl.getHotel(hotel.getId());
 		assertNotNull(gottenHotel);
-		assertEquals(gottenHotel.getId(), id);
-		
-
+		assertEquals(gottenHotel.getId(), hotel.getId());
+		assertEquals(gottenHotel.getHotelName(), hotel.getHotelName());
+		assertEquals(gottenHotel.getShortDescription(), hotel.getShortDescription());
+		assertEquals(gottenHotel.getLongDescription(), hotel.getLongDescription());
+		assertEquals(gottenHotel.getExperienceLevel(), hotel.getExperienceLevel());
+		assertEquals(gottenHotel.getLocation(), hotel.getLocation());
+		assertEquals(gottenHotel.getPrice(), hotel.getPrice());
+		assertEquals(gottenHotel.getPool(), hotel.getPool());
+		assertEquals(gottenHotel.getImg(), hotel.getImg());
+	}
+	@Test
+	void canUpdateHotel(){
+		Long id = 1L;
+		String hotleName = "PC hotel";
+		String shortDescription = "this is short description";
+		String longDescription = "this is long description";
+		String img = "image of hotel";
+		String location = "Karachi";
+		String experienceLevel = "Luxury";
+		String pool = "No";
+		Long price = 4000L;
+		Hotel hotel = Hotel.builder()
+							.id(id)
+							.hotelName(hotleName)
+							.shortDescription(shortDescription)
+							.longDescription(longDescription)
+							.img(img)
+							.location(location)
+							.experienceLevel(experienceLevel)
+							.pool(pool)
+							.price(price)
+							.build();
+		given(hotelRepository.findByHotelName(hotleName)).willReturn(Optional.of(hotel));
+		given(hotelRepository.save(hotel)).willReturn(hotel);
+		Hotel updatedHotel = hotelServiceImpl.updateHotel(hotel);
+		assertNotNull(updatedHotel);
+		assertEquals(updatedHotel.getId(), hotel.getId());
+		assertEquals(updatedHotel.getHotelName(), hotel.getHotelName());
+		assertEquals(updatedHotel.getShortDescription(), hotel.getShortDescription());
+		assertEquals(updatedHotel.getLongDescription(), hotel.getLongDescription());
+		assertEquals(updatedHotel.getExperienceLevel(), hotel.getExperienceLevel());
+		assertEquals(updatedHotel.getLocation(), hotel.getLocation());
+		assertEquals(updatedHotel.getPrice(), hotel.getPrice());
+		assertEquals(updatedHotel.getPool(), hotel.getPool());
+		assertEquals(updatedHotel.getImg(), hotel.getImg());
+	}
+	@Test
+	void canDeleteHotel(){
+		Long id = 1L;
+		willDoNothing().given(hotelRepository).deleteById(id);
+		hotelServiceImpl.deleteHotel(id);
+		verify(hotelRepository, times(1)).deleteById(id);
+	}
+	@Test
+	void canGetAllHotel(){
+		Hotel hotel1 = Hotel.builder()
+							.id(1L)
+							.hotelName("PC Hotel")
+							.shortDescription("This is Pc hotel")
+							.longDescription("it is long description of Pc hotel")
+							.img("img")
+							.location("Karchi")
+							.experienceLevel("Budget")
+							.pool("No")
+							.price(2356L)
+							.build();
+		Hotel hotel2 = Hotel.builder()
+							.id(2L)
+							.hotelName("DC Hotel")
+							.shortDescription("this is Dc hotel")
+							.longDescription("This is long description of Dc hotel")
+							.img("image")
+							.location("Quetta")
+							.experienceLevel("Luxury")
+							.pool("Yes")
+							.price(4568L)
+							.build();
+		Hotel hotel3 = Hotel.builder()
+							.id(3L)
+							.hotelName("GC hotel")
+							.shortDescription("this is GC hotel")
+							.longDescription("This is long description of GC hotel")
+							.img("image")
+							.location("Turbat")
+							.experienceLevel("Luxury")
+							.pool("No")
+							.price(5555L)
+							.build();
+		Hotel hotel4 = Hotel.builder()
+							.id(4L)
+							.hotelName("Kaka")
+							.shortDescription("This is Kaka hotel")
+							.longDescription("This is long description")
+							.img("image")
+							.location("Buleda")
+							.experienceLevel("budget")
+							.pool("No")
+							.price(3000L)
+							.build();
+		given(hotelRepository.findAll()).willReturn(List.of(hotel1,hotel2,hotel3,hotel4));
+		List<Hotel> hotels = hotelServiceImpl.getAllHotels();
+		assertNotNull(hotels);
+		assertEquals(hotels.size(), 4);
 	}
 }

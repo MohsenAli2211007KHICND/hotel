@@ -1,5 +1,6 @@
 package gul.hotel;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
@@ -26,5 +27,19 @@ public class HotelServiceImpl implements HotelService {
         return hotelRepository.getReferenceById(id);
     }
 
+    public Hotel updateHotel(Hotel hotel){
+        Optional<Hotel> savedHotel = hotelRepository.findByHotelName(hotel.getHotelName());
+        if(savedHotel.isEmpty()){
+            throw new InvalidConfigurationPropertyValueException("Name",hotel.getHotelName(), "Hotel name"+hotel.getHotelName()+" is not exist in database");
+        }
+        return hotelRepository.save(hotel);
+
+    }
+    public void deleteHotel(Long id){
+        hotelRepository.deleteById(id);
+    }
+    public List<Hotel> getAllHotels(){
+        return hotelRepository.findAll();
+    }
     
 }
