@@ -226,4 +226,13 @@ public class HotelControllerTest {
         response.andExpect(status().isNotFound())
                 .andDo(print());
     }
+    @Test
+    public void canDeleteAHotel() throws Exception {
+        Long hotelId = 1L;
+        willDoNothing().given(hotelService).deleteHotel(hotelId);
+
+        ResultActions response = mockMvc.perform(delete("/api/hotels/delete/{id}", hotelId));
+        response.andExpect(status().isOk()).andDo(print());
+        verify(hotelService,times(1)).deleteHotel(hotelId);
+    }
 }
