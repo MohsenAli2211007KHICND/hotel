@@ -5,6 +5,7 @@ import java.util.List;
 import javax.net.ssl.SSLEngineResult.Status;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,8 +34,15 @@ public class HotelController {
         return hotelService.getAllHotels();
     }
     @GetMapping("/{id}")
-    public Hotel getAHotel(@PathVariable Long id ){
-        return hotelService.getHotel(id);
+    public ResponseEntity<Hotel> getAHotel(@PathVariable Long id ){
+        Hotel hotel = hotelService.getHotel(id);
+        if(hotel.getId() != null){
+            return ResponseEntity.status(HttpStatus.OK).body(hotel);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        
     }
     
 }

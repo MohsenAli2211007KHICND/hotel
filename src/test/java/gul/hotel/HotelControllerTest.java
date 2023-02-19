@@ -147,5 +147,12 @@ public class HotelControllerTest {
                 .andExpect(jsonPath("$.longDescription", is(hotel.getLongDescription())))
                 .andExpect(jsonPath("$.shortDescription", is(hotel.getShortDescription())));
     }
+    @Test
+    public void cantGetAHotelIfItDoesNotExistInDataBase() throws Exception{
+        Long hotelId = 1L;
+        given(hotelService.getHotel(hotelId)).willReturn(new Hotel());
+        ResultActions response = mockMvc.perform(get("/api/hotels/{id}", hotelId));
+        response.andExpect(status().isNotFound());
+    }
 
 }
