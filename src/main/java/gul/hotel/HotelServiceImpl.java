@@ -2,6 +2,7 @@ package gul.hotel;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 
 import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,12 @@ public class HotelServiceImpl implements HotelService {
     }
     public List<Hotel> getAllHotels(){
         return hotelRepository.findAll();
+    }
+    public List<Hotel> getAllBySearchInputs(String location, String experienceLevel, String pool){
+        List<Hotel> hotels = hotelRepository.findAll();
+        return hotels.stream().filter(hotel -> hotel.getLocation()==location && hotel.getExperienceLevel() == experienceLevel && hotel.getPool()==pool).toList();
+    
+
     }
     
 }

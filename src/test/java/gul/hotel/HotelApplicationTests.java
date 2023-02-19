@@ -379,4 +379,37 @@ class HotelApplicationTests {
 		assertNotNull(hotels);
 		assertEquals(hotels.size(), 4);
 	}
+
+	@Test
+	void canGetHotelBySearchInputs(){
+		String location = "Karachi";
+		String experienceLevel = "luxury";
+		String pool = "yes";
+		Hotel hotel1 = Hotel.builder()
+					.id(1L)
+					.hotelName("Kaka")
+					.shortDescription("This is Kaka hotel")
+					.longDescription("This is long description")
+					.img("image")
+					.location(location)
+					.experienceLevel(experienceLevel)
+					.pool(pool)
+					.price(3000L)
+					.build();
+		Hotel hotel2 = Hotel.builder()
+					.id(1L)
+					.hotelName("ZJ")
+					.shortDescription("This is ZJ hotel")
+					.longDescription("This is long description")
+					.img("image")
+					.location(location)
+					.experienceLevel(experienceLevel)
+					.pool(pool)
+					.price(3000L)
+					.build();		
+		given(hotelRepository.findAll()).willReturn(List.of(hotel1, hotel2));
+		List<Hotel> allHotels = hotelServiceImpl.getAllBySearchInputs(location,experienceLevel,pool);
+		assertNotNull(allHotels);
+		assertEquals(allHotels.size(), 2);
+	}
 }

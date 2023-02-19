@@ -8,4 +8,5 @@ public interface HotelService {
     Hotel updateHotel(Hotel hotel);
     void deleteHotel(Long id);
     List<Hotel> getAllHotels();
+    List<Hotel> getAllBySearchInputs(String location, String experienceLevel, String pool);
 }
