@@ -48,10 +48,10 @@ public class HotelControllerTest {
         ResultActions response = mockMvc.perform(post("/api/hotels")
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(hotel))); 
-        response.andDo(print()) 
+        response.andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.hotelName", is(hotel.getHotelName())))
-                .andExpect(jsonPath("$.price", is(hotel.getPrice())))  
+                .andExpect(jsonPath("$.price", is(hotel.getPrice().intValue())))  
                 .andExpect(jsonPath("$.id", is(hotel.getId())))
                 .andExpect(jsonPath("$.pool", is(hotel.getPool())))  
                 .andExpect(jsonPath("$.experienceLevel", is(hotel.getExperienceLevel())))
