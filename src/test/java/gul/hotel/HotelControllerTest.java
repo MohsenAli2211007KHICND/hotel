@@ -235,4 +235,41 @@ public class HotelControllerTest {
         response.andExpect(status().isOk()).andDo(print());
         verify(hotelService,times(1)).deleteHotel(hotelId);
     }
-}
+    @Test
+    public void canGetHotelBySearch() throws Exception{
+        String location = "Karachi";
+        String experienceLevel = "luxury";
+        String pool = "yes";
+        Hotel hotel1 = Hotel.builder()
+                                .id(1L)
+                                .hotelName("Kaka")
+                                .shortDescription("This is Kaka hotel")
+                                .longDescription("This is long description")
+                                .img("image")
+                                .location(location)
+                                .experienceLevel(experienceLevel)
+                                .pool(pool)
+                                .price(3000L)
+                                .build();
+        Hotel hotel2 = Hotel.builder()
+                                .id(1L)
+                                .hotelName("ZJ")
+                                .shortDescription("This is ZJ hotel")
+                                .longDescription("This is long description")
+                                .img("image")
+                                .location(location)
+                                .experienceLevel(experienceLevel)
+                                .pool(pool)
+                                .price(3000L)
+                                .build();
+        List<Hotel> hotels = List.of(hotel1, hotel2);
+        given(hotelService.getAllBySearchInputs(location, experienceLevel, pool)).willReturn(hotels);
+        ResultActions response = mockMvc.perform(get("/api/hotels/search", location, experienceLevel, pool)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(hotels)));
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.size()", is(hotels.size())));
+
+    }
+} 
