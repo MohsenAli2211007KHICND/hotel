@@ -3,6 +3,7 @@ package gul.hotel;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.Invocation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.source.InvalidConfigurationPropertyValueException;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -184,8 +185,8 @@ public class HotelControllerTest {
         given(hotelService.updateHotel(any(Hotel.class))).willAnswer(invocation -> invocation.getArgument(0));
 
         ResultActions response = mockMvc.perform(put("/api/hotels/update/{id}", hotelId, updateHotel)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(updateHotel)));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateHotel)));
 
         response.andExpect(status().isOk())
                 .andDo(print())
@@ -197,6 +198,32 @@ public class HotelControllerTest {
                 .andExpect(jsonPath("$.img", is(updateHotel.getImg())))
                 .andExpect(jsonPath("$.location", is(updateHotel.getLocation())))
                 .andExpect(jsonPath("$.longDescription", is(updateHotel.getLongDescription())))
-                .andExpect(jsonPath("$.shortDescription", is(updateHotel.getShortDescription())));    }
+                .andExpect(jsonPath("$.shortDescription", is(updateHotel.getShortDescription())));
+    }
 
+    @Test
+    public void cantUpdateAHotelIfItDoesNotExist() throws Exception {
+        Long hotelId = 1L;
+        Hotel updateHotel = Hotel.builder()
+                .id(hotelId)
+                .hotelName("GC hotel")
+                .shortDescription("this is GC hotel")
+                .longDescription("This is long description of GC hotel")
+                .img("image")
+                .location("Turbat")
+                .experienceLevel("Luxury")
+                .pool("No")
+                .price(5555L)
+                .build();
+        given(hotelService.getHotel(hotelId)).willReturn(new Hotel());
+        given(hotelService.updateHotel(updateHotel))
+                .willThrow(new InvalidConfigurationPropertyValueException("Name", updateHotel.getHotelName(),
+                        "A hotel name" + updateHotel.getHotelName() + " does not exist in the database."));
+        ResultActions response = mockMvc.perform(put("/api/hotels/update/{id}", hotelId, updateHotel)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateHotel)));
+
+        response.andExpect(status().isNotFound())
+                .andDo(print());
+    }
 }
