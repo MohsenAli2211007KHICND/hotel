@@ -67,7 +67,6 @@ public class HotelControllerTest {
     @Test
     public void canGetAllHotels() throws Exception {
         Hotel hotel1 = Hotel.builder()
-                .id(1L)
                 .hotelName("PC Hotel")
                 .shortDescription("This is Pc hotel")
                 .longDescription("it is long description of Pc hotel")
@@ -78,7 +77,6 @@ public class HotelControllerTest {
                 .price(2356L)
                 .build();
         Hotel hotel2 = Hotel.builder()
-                .id(2L)
                 .hotelName("DC Hotel")
                 .shortDescription("this is Dc hotel")
                 .longDescription("This is long description of Dc hotel")
@@ -89,7 +87,6 @@ public class HotelControllerTest {
                 .price(4568L)
                 .build();
         Hotel hotel3 = Hotel.builder()
-                .id(3L)
                 .hotelName("GC hotel")
                 .shortDescription("this is GC hotel")
                 .longDescription("This is long description of GC hotel")
@@ -100,7 +97,6 @@ public class HotelControllerTest {
                 .price(5555L)
                 .build();
         Hotel hotel4 = Hotel.builder()
-                .id(4L)
                 .hotelName("Kaka")
                 .shortDescription("This is Kaka hotel")
                 .longDescription("This is long description")
@@ -113,12 +109,43 @@ public class HotelControllerTest {
         List<Hotel> hotels = List.of(hotel1, hotel2, hotel3, hotel4);
         given(hotelService.getAllHotels()).willReturn(hotels);
         ResultActions response = mockMvc.perform(get("/api/hotels/all")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(hotels)));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(hotels)));
 
         response.andExpect(status().isOk());
         response.andDo(print())
                 .andExpect(jsonPath("$.size()", is(hotels.size())));
+    }
+
+    @Test
+    public void canGetAHotel() throws Exception {
+        Long hotelId = 1L;
+        Hotel hotel = Hotel.builder()
+                .id(hotelId)
+                .hotelName("PC Hotel")
+                .shortDescription("This is Pc hotel")
+                .longDescription("it is long description of Pc hotel")
+                .img("img")
+                .location("Karchi")
+                .experienceLevel("Budget")
+                .pool("No")
+                .price(2356L)
+                .build();
+        given(hotelService.getHotel(hotelId)).willReturn(hotel);
+        ResultActions response = mockMvc.perform(get("/api/hotels/{id}", hotelId)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(objectMapper.writeValueAsString(hotel)));
+        response.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(hotel.getId().intValue())))
+                .andExpect(jsonPath("$.hotelName", is(hotel.getHotelName())))
+                .andExpect(jsonPath("$.price", is(hotel.getPrice().intValue())))
+                .andExpect(jsonPath("$.pool", is(hotel.getPool())))
+                .andExpect(jsonPath("$.experienceLevel", is(hotel.getExperienceLevel())))
+                .andExpect(jsonPath("$.img", is(hotel.getImg())))
+                .andExpect(jsonPath("$.location", is(hotel.getLocation())))
+                .andExpect(jsonPath("$.longDescription", is(hotel.getLongDescription())))
+                .andExpect(jsonPath("$.shortDescription", is(hotel.getShortDescription())));
     }
 
 }
