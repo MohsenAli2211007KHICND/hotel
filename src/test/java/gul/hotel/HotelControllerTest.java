@@ -133,8 +133,8 @@ public class HotelControllerTest {
                 .build();
         given(hotelService.getHotel(hotelId)).willReturn(hotel);
         ResultActions response = mockMvc.perform(get("/api/hotels/{id}", hotelId)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(hotel)));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(hotel)));
         response.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(hotel.getId().intValue())))
@@ -147,12 +147,56 @@ public class HotelControllerTest {
                 .andExpect(jsonPath("$.longDescription", is(hotel.getLongDescription())))
                 .andExpect(jsonPath("$.shortDescription", is(hotel.getShortDescription())));
     }
+
     @Test
-    public void cantGetAHotelIfItDoesNotExistInDataBase() throws Exception{
+    public void cantGetAHotelIfItDoesNotExistInDataBase() throws Exception {
         Long hotelId = 1L;
         given(hotelService.getHotel(hotelId)).willReturn(new Hotel());
         ResultActions response = mockMvc.perform(get("/api/hotels/{id}", hotelId));
         response.andExpect(status().isNotFound());
     }
+
+    @Test
+    public void canUpdatAHotel() throws Exception {
+        Long hotelId = 1L;
+        Hotel savedHotel = Hotel.builder()
+                .hotelName("PC Hotel")
+                .shortDescription("This is Pc hotel")
+                .longDescription("it is long description of Pc hotel")
+                .img("img")
+                .location("Karchi")
+                .experienceLevel("Budget")
+                .pool("No")
+                .price(2356L)
+                .build();
+        Hotel updateHotel = Hotel.builder()
+                .id(hotelId)
+                .hotelName("GC hotel")
+                .shortDescription("this is GC hotel")
+                .longDescription("This is long description of GC hotel")
+                .img("image")
+                .location("Turbat")
+                .experienceLevel("Luxury")
+                .pool("No")
+                .price(5555L)
+                .build();
+        given(hotelService.getHotel(hotelId)).willReturn(savedHotel);
+        given(hotelService.updateHotel(any(Hotel.class))).willAnswer(invocation -> invocation.getArgument(0));
+
+        ResultActions response = mockMvc.perform(put("/api/hotels/update/{id}", hotelId, updateHotel)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(updateHotel)));
+
+        response.andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.id", is(updateHotel.getId().intValue())))
+                .andExpect(jsonPath("$.hotelName", is(updateHotel.getHotelName())))
+                .andExpect(jsonPath("$.price", is(updateHotel.getPrice().intValue())))
+                .andExpect(jsonPath("$.pool", is(updateHotel.getPool())))
+                .andExpect(jsonPath("$.experienceLevel", is(updateHotel.getExperienceLevel())))
+                .andExpect(jsonPath("$.img", is(updateHotel.getImg())))
+                .andExpect(jsonPath("$.location", is(updateHotel.getLocation())))
+                .andExpect(jsonPath("$.longDescription", is(updateHotel.getLongDescription())))
+                .andExpect(jsonPath("$.shortDescription", is(updateHotel.getShortDescription())));    }
 
 }
